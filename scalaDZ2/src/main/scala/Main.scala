@@ -3,13 +3,11 @@ object Main extends {
   var table = (v1: Int) => (v1: Int) => 0
   var procedure = (v1: Int) => (v1: Double) => "Костыль для 3 задания: строки 38 и 42"
 
-  def main(args: Array[String]): Unit = {   // Основной метод класса, консольный интерфейс
-    println("Hello! What exercise want you do?")
-    println("1 - partApply")
-    println("2 - composes")
-    println("3 - curry")
-    readInt() match {                       // по цифре выбирается номер задания
-      case 1 => {                           // 1 задание: Небольшой симулятор SQL-запроса :))))
+  def main(args: Array[String]): Unit = { // Основной метод класса, консольный интерфейс
+    println("Hello! What exercise want you do?\n1 - partApply\n2 - compose\n3 - curry")
+
+    readInt() match { // по цифре выбирается номер задания
+      case 1 => { // 1 задание: Небольшой симулятор SQL-запроса :))))
         println("SQL-simulator: what operation want you do?\n1 - Select\n2 - Update\n3 - Delete\n4 - Insert")
         readInt() match {
           case 1 => table = partApply(select, _)
@@ -20,7 +18,8 @@ object Main extends {
         println("Input row limit")
         val limit = readInt()
         val query = table(limit)
-        print(query)
+        query(10)
+
       }
       case 2 => { // 2 задание: композ в обратную сторону не получается из-за конфликта типов, так что только gf(
         println("Input integer number")
@@ -43,13 +42,17 @@ object Main extends {
       }
     }
   }
+
   // 1 задание
   def partApply(f: (Int, Int) => Int, x: Int): Int => Int = {
+    def endQuery(a: Int, b: Int): Int = a / b
+
     println("Next query was executed:")
-    f(2, 3)
+    val result = f(2, 3)
     print(f" LIMIT $x ")
-    println(f"WHERE value = ")
-    _ * 1
+    print(f"WHERE value = ")
+
+    endQuery(result, _)
   }
 
   // Методы для 1 задания
@@ -86,15 +89,18 @@ object Main extends {
     val result: Double = (v1 + v2) / 2
     f"Middle number between $v1 and $v2 = $result"
   }
+
   // метод модуль разности для 3 задания
   def absReduce(v1: Int, v2: Double): String = {
     val result: Double = math.abs(v1 - v2)
     f"Absolute reduce of $v1 and $v2 = $result"
   }
+
   // методы f и g для 2 задания
   def f(x: Int): Double = x.toDouble
 
   def g(y: Double): String = y.toString
+
   // продолжение 2 задания
   val fg = g _ compose f
   val gf = f _ andThen g
