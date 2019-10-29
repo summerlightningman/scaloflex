@@ -8,26 +8,12 @@ object Main extends {
 
     readInt() match { // по цифре выбирается номер задания
       case 1 => { // 1 задание: Небольшой симулятор SQL-запроса :))))
-        println("SQL-simulator: what operation want you do?\n1 - Select\n2 - Update\n3 - Delete\n4 - Insert")
-        readInt() match {
-          case 1 => table = partApply(select, _)
-          case 2 => table = partApply(update, _)
-          case 3 => table = partApply(delete, _)
-          case 4 => table = partApply(insert, _)
-        }
-        println("Input row limit")
-        val limit = readInt()
-        val query = table(limit)
-
+        val partial = partApply(_ + _, 2)
+        val result = partial(0)
+        println(result)
       }
-      case 2 => { // 2 задание: композ в обратную сторону не получается из-за конфликта типов, так что только gf(
-        println("Input integer number")
-        val num = readInt()
-        val selection = println("compose or andThen?\n1 - compose\n2 - andThen")
-        readInt() match {
-          case 1 => fg(num)
-          case 2 => gf(num)
-        }
+      case 2 => {
+        fg(10)
       }
       case 3 => { // 3 задание: каррирование: есть 2 метода, с которыми работает функция: middle и absReduce
         println("What operation want you do?\n1 - Middle arithmetic\n2 - Absolute reduce")
@@ -44,40 +30,9 @@ object Main extends {
 
   // 1 задание
   def partApply(f: (Int, Int) => Int, x: Int): Int => Int = {
-    def endQuery(a: Int, b: Int): Int = a / b
-
-    println("Next query was executed:")
-    val result = f(2, 3)
-    print(f" LIMIT $x ")
-    print(f"WHERE value = ")
-
-    endQuery(result, _)
+    f(_, 2)
   }
 
-  // Методы для 1 задания
-  // типВыборка
-  def select(db: Int, table: Int): Int = {
-    print(f"SELECT FROM $db.$table")
-    db * table
-  }
-
-  // типРедактирование
-  def update(db: Int, table: Int): Int = {
-    print(f"UPDATE $db.$table")
-    db + table
-  }
-
-  // типУдаление
-  def delete(db: Int, table: Int): Int = {
-    print(f"DELETE FROM $db.$table")
-    math.round(math.random()).toInt
-  }
-
-  // типДобавление
-  def insert(db: Int, table: Int): Int = {
-    print(f"INSERT INTO $db.$table")
-    math.pow(db + table, 0).toInt
-  }
 
   // 3 задание
   def curry(f: (Int, Double) => String): Int => Double => String =
@@ -101,8 +56,7 @@ object Main extends {
   def g(y: Double): String = y.toString
 
   // продолжение 2 задания
-  val fg = g _ compose f
-  val gf = f _ andThen g
+  val fg = f _ andThen g
 
 
 }
