@@ -1,5 +1,4 @@
 object Main extends {
-  var procedure = (v1: Int) => (v1: Double) => "Костыль для 3 задания: строки 38 и 42"
 
   def main(args: Array[String]): Unit = { // Основной метод класса, консольный интерфейс
     println("Hello! What exercise want you do?\n1 - partApply\n2 - compose\n3 - curry")
@@ -15,9 +14,10 @@ object Main extends {
       }
       case 3 => { // 3 задание: каррирование: есть 2 метода, с которыми работает функция: middle и absReduce
         println("What operation want you do?\n1 - Middle arithmetic\n2 - Absolute reduce")
-        readInt() match {
-          case 1 => procedure = curry(middle)
-          case 2 => procedure = curry(absReduce)
+
+        val procedure = readInt() match {
+          case 1 => curry(middle)
+          case 2 => curry(absReduce)
         }
         println("Input numbers with space separator")
         val nums = readLine().split(" ")
