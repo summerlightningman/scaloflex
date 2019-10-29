@@ -18,7 +18,6 @@ object Main extends {
         println("Input row limit")
         val limit = readInt()
         val query = table(limit)
-        query(10)
 
       }
       case 2 => { // 2 задание: композ в обратную сторону не получается из-за конфликта типов, так что только gf(
