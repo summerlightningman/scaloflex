@@ -1,13 +1,11 @@
 object Main extends {
-  // Костыль для работы переменной table, чтобы вытащить её из области видимости case (строки 16 и 22)
-  var table = (v1: Int) => (v1: Int) => 0
   var procedure = (v1: Int) => (v1: Double) => "Костыль для 3 задания: строки 38 и 42"
 
   def main(args: Array[String]): Unit = { // Основной метод класса, консольный интерфейс
     println("Hello! What exercise want you do?\n1 - partApply\n2 - compose\n3 - curry")
 
     readInt() match { // по цифре выбирается номер задания
-      case 1 => { // 1 задание: Небольшой симулятор SQL-запроса :))))
+      case 1 => {
         val partial = partApply(_ + _, 2)
         val result = partial(0)
         println(result)
@@ -30,9 +28,8 @@ object Main extends {
 
   // 1 задание
   def partApply(f: (Int, Int) => Int, x: Int): Int => Int = {
-    f(_, 2)
+    f(_, x)
   }
-
 
   // 3 задание
   def curry(f: (Int, Double) => String): Int => Double => String =
