@@ -34,7 +34,7 @@ case class PyotrFirst() extends RomanovsDynasty with Emperor {
   override val name: String = "Pyotr"
 
   override def goReforms(name: String, year: Int): Unit = {
-    println(s"В $year году, Петром I была проведена реформа 'О $name'"
+    println(s"В $year году, Петром I была проведена реформа 'О $name'")
   }
 
   override def goWar(name: String, year: Int, country: String): Int = {

@@ -11,24 +11,10 @@ object Main extends App {
   defineAllAnimals(lion, mamba, elephant, crocodile, qiwi, alien)
 
   def defineAnimal(animal: Creature) = {
-    val w = animal.weight;
-    val l = animal.length;
-    val c = animal.coatLength;
-
-    if ((200 to 250).contains(w) && (1 to 3).contains(l) && (1 to 30).contains(c))
-      "Лев"
-    else if ((0 to 2).contains(w) && (1 to 3).contains(l) && (1 to 30).contains(c))
-      "Чёрная мамба"
-    else if (w > 5000 && (5 to 7).contains(l) && (0 to 15).contains(c))
-      "Слон"
-    else if ((200 to 550).contains(w) && (2 to 4).contains(l) && c == 0)
-      "Нильский крокодил"
-    else if ((0 to 1).contains(w) && l == 0 && (2 to 5).contains(c))
-      "Сурикат"
-    else if ((0 to 1).contains(w) && (0 to 2).contains(l) && (0 to 3).contains(c))
-      "Киви"
-    else
-      "Инопланетянин"
+    (animal) match {
+      case Creature(_, _, _) => "elephant"
+      case _ => "privet"
+    }
   }
 
   def defineAllAnimals(animal: Creature*): Unit = {
