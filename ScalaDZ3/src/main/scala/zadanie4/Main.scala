@@ -3,13 +3,11 @@ package zadanie4
 import scala.io.Source
 
 object Main extends App {
-
   val source = Source.fromFile("file.txt")
   val lines = try source.getLines().toList finally source.close() // List(1;11.35, 2;12.39, 2;15.01, 1;9.06, 1;9.26,...
 
   val data = lines.map((line: String) =>
     (line.split(";")(0).toInt, line.split(";")(1).toDouble))
-    .sorted
     .groupBy(_._1)
 
   val groupped = data.map {

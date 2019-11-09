@@ -8,18 +8,18 @@ object Main extends App {
   val qiwi = Creature(0, 0, 0)
   val alien = Creature(9999, 9999, 9999)
 
-  defineAllAnimals(lion, mamba, elephant, crocodile, qiwi, alien)
+  println(defineAnimal(alien))
+  println(defineAnimal(crocodile))
+  println(Creature(225, 2, 2))
 
   def defineAnimal(animal: Creature) = {
     (animal) match {
-      case Creature(_, _, _) => "elephant"
-      case _ => "privet"
-    }
-  }
-
-  def defineAllAnimals(animal: Creature*): Unit = {
-    for (i <- 0 until animal.length) {
-      println(defineAnimal(animal(i)))
+      case Creature(225, 2, 2) => "Lion"
+      case Creature(1, 3, 0) => "Black mamba"
+      case Creature(999999, 6, 7) => "Elephant"
+      case Creature(375, 3, 0) => "Nil crocodile"
+      case Creature(1, 0, 4) => "Meerkat"
+      case _ => "Alien"
     }
   }
 }
