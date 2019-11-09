@@ -34,20 +34,20 @@ case class PyotrFirst() extends RomanovsDynasty with Emperor {
   override val name: String = "Pyotr"
 
   override def goReforms(name: String, year: Int): Unit = {
-    println(s"В %s году, Петром I была проведена реформа 'О %i'".format(name, year))
+    println(s"В $year году, Петром I была проведена реформа 'О $name'"
   }
 
   override def goWar(name: String, year: Int, country: String): Int = {
     val deaths = Random.nextInt(1000000);
-    println(s"В %n, Пётр I провёл Российскую империю через %s войну с %s, унёсшую жизни около %i человек!".format(year, name, country, deaths))
+    println(s"В $year году, Пётр I провёл Российскую империю через $name войну с $country, унёсшую жизни около $deaths человек!")
     deaths
   }
 }
 
 case class IvanFedorovich() extends King {
   override def captureNewTerritory(name: String): Unit = {
-    val s = Random.nextFloat() * 50;
-    println(s"Территория земель $name площадью $s гектар была недавно захвачена!")
+    val S = Random.nextFloat() * 50;
+    println(s"Территория земель $name площадью $S гектар была недавно захвачена!")
   }
 
   override def killBrother(name: String): String = {
