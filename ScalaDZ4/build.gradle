@@ -1,0 +1,17 @@
+group 'ScalaDZ3'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'scala'
+
+repositories {
+    mavenCentral()
+}
+jar {
+    manifest {
+        attributes('Main-Class': 'zadanie1.Main')
+
+    }
+}
+dependencies {
+    compile group: 'org.scala-lang', name: 'scala-library', version: '2.12.10'
+}

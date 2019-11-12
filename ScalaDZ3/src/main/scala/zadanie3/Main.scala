@@ -10,16 +10,21 @@ object Main extends App {
 
   println(defineAnimal(alien))
   println(defineAnimal(crocodile))
-  println(Creature(225, 2, 2))
+  println(defineAnimal(Creature(225, 2, 2)))
 
   def defineAnimal(animal: Creature) = {
-    (animal) match {
-      case Creature(225, 2, 2) => "Lion"
-      case Creature(1, 3, 0) => "Black mamba"
-      case Creature(999999, 6, 7) => "Elephant"
-      case Creature(375, 3, 0) => "Nil crocodile"
-      case Creature(1, 0, 4) => "Meerkat"
-      case _ => "Alien"
+    animal.coatLength match {
+      case 0 =>
+        if ((0 to 2).contains(animal.weight))
+          if ((2 to 4).contains(animal.length)) "Black mamba" else "Alien"
+        else if ((200 to 550).contains(animal.weight))
+          if ((2 to 4).contains(animal.length)) "Nil crocodile" else "Alien"
+        else if ((5 to 7).contains(animal.length)) "Elephant" else "Alien"
+      case _ =>
+        animal.length match {
+          case 0 => if ((0 to 1).contains(animal.weight)) "Meerkat" else "Alien"
+          case _ => if (animal.length < 3) "Lion" else "Elephant"
+        }
     }
   }
 }
