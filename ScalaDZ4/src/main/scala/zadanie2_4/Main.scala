@@ -73,7 +73,7 @@ object Main extends App {
       case (quarter, day) => (quarter, day.length)
     }.maxBy(quarter => quarter._2)
 
-    println(s"The most count of operation ${title} does at ${quad._1} quarter of day in amount of ${quad._2} units")
+    println(s"The most count of operation ${title} does at ${quad._1} quarter of day in amount of ${quad._2} times")
   }
 
   quarter("cinema")
