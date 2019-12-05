@@ -1,6 +1,5 @@
 package zadanie1
 
-
 trait Philosopher {
   def takeLeft(withLeft: => Unit): Unit
 

@@ -9,5 +9,4 @@ case class Filosof(name: String, left: Int, right: Int) extends Philosopher {
 
   }
 
-
 }
