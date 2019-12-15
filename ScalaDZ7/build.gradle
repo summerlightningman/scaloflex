@@ -1,0 +1,27 @@
+group 'ScalaDZ7'
+version '1.0-SNAPSHOT'
+
+// gradle - plugins to make gradle java aware
+apply plugin: 'scala'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+// gradle - plugins to tell gradle where is java code
+sourceSets {
+    main {
+        scala.srcDirs = ['src']
+    }
+}
+
+// gradle - plugins to what are dependencies
+dependencies {
+    compile 'com.google.code.gson:gson:2.8.6'
+    compile 'org.apache.spark:spark-sql_2.12:2.4.4'
+    compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.11'
+    compile group: 'com.opencsv', name: 'opencsv', version: '5.0'
+}
+
+// gradle - plugins to tell gradle where to pull dependencies from
+repositories {
+    mavenCentral()
+}
