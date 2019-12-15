@@ -5,6 +5,8 @@ import org.apache.spark.sql.{Row, SparkSession}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
+// Задание: How to add days (as values of a column) to date?
+// Ссылка: http://blog.jaceklaskowski.pl/spark-workshop/exercises/spark-sql-exercise-How-to-add-days-as-values-of-a-column-to-date.html
 
 object Main extends App {
   val spark = SparkSession.builder().master("local[*]").appName("zadanie1").getOrCreate()

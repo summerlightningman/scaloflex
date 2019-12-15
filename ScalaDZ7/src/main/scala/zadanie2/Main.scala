@@ -1,10 +1,10 @@
 package main.scala.zadanie2
 
-import org.apache.spark.sql.catalyst.expressions.aggregate.Max
-import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types.{IntegerType, StructType}
+import org.apache.spark.sql.{Row, SparkSession}
 
+// Задание: Multiple Aggregations
+// Ссылка: http://blog.jaceklaskowski.pl/spark-workshop/exercises/spark-sql-exercise-Multiple-Aggregations.html
 
 object Main extends App {
 

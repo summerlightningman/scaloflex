@@ -1,7 +1,10 @@
 package main.scala.zadanie3
 
-import org.apache.spark.sql.types.{IntegerType, StringType, StructType}
+import org.apache.spark.sql.types.{StringType, StructType}
 import org.apache.spark.sql.{Row, SparkSession}
+
+// Задание: Using upper Standard Function
+// Ссылка: http://blog.jaceklaskowski.pl/spark-workshop/exercises/spark-sql-exercise-Using-upper-Standard-Function.html
 
 object Main extends App {
   val spark = SparkSession.builder().master("local[*]").appName("zadanie1").getOrCreate()
