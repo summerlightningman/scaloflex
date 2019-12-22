@@ -2,6 +2,7 @@ package main.scala.zadanie4
 
 import org.apache.spark.sql.types.{IntegerType, StringType, StructType}
 import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.functions._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
@@ -22,17 +23,5 @@ object Main extends App {
     (5, "2016-06-1"),
     (6, "2016-03-21")
   ).toDF("number_of_days", "date")
-    .collect.map {
-    case line =>
-      val fmt = DateTimeFormat.forPattern("yyyy-MM-dd")
-      Row(line(0), line(1), fmt.print(new DateTime(line(1)).plusDays(line(0).toString.toInt)))
-  }
-
-  val cols = new StructType()
-    .add("number_of_days", IntegerType)
-    .add("date", StringType)
-    .add("future_date", StringType)
-
-  val result = spark.createDataFrame(spark.sparkContext.parallelize(df), cols)
-  result.show()
+  df.withColumn("future", expr("date_add(date,number_of_days)")).show()
 }
