@@ -11,13 +11,16 @@ import org.apache.spark.sql.types._
 object Main extends App {
   val spark = SparkSession.builder().master("local[*]").appName("zadanie5").getOrCreate()
   val populations = spark.read.format("csv").option("header", "true").load("populations.csv")
-  val city = populations.groupBy("name").agg(min("population").as("c_population"))
+  val city = populations
+    .select(col("name"), regexp_replace(col("population"), " ", "")
+    .cast(IntegerType).as("population"))
 
   populations
+    .select(col("name"), col("country"), regexp_replace(col("population"), " ", "").cast(IntegerType).as("population"))
     .groupBy("country")
     .agg(max("population").as("population"))
-    .join(city, col("population") === city("c_population"))
-    .select(col("name"), col("country"), col("c_population").as("population"))
+    .join(city, "population")
+    .select(col("name"), col("country"), col("population"))
     .show()
 
 }
