@@ -1,10 +1,7 @@
 */.idea
 */.gradle
 */build
-akka-quickstart-scala
 goAnotherOneAkka
-*/akka-quickstart-scala
-*/goAnotherOneAkka
 .gitignore
 tetris
 source
