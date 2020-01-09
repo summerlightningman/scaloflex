@@ -1,20 +1,14 @@
 package zadanie1
 
-import java.io.{File, InputStream}
+import java.io.File
 
-import akka.actor.Actor.Receive
 import akka.actor.{ActorRef, ActorSystem}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
 case object Stream {
-
-  import Stream._
-
-  //  val inputPath = s"${System.getProperty("user.dir")}/src/main/resources/source"
-
   val system = ActorSystem("cars")
 
   def filter(countOfFilter: Int)(doFilter: Seq[ActorRef] => File => Unit): FilterObject = {
@@ -53,7 +47,7 @@ case class Stream(countOfFilter: Int,
     Future {
       val system = ActorSystem("cars")
 
-      var i = 0
+      var counter = 0
 
       val reducers = for (i <- 1 to countOfReduce) yield system.actorOf(ReduceActor.props(doReduce(i, outputPath)))
       val shuffleActor = system.actorOf(ShuffleActor.props(reducers))
@@ -61,8 +55,8 @@ case class Stream(countOfFilter: Int,
       val filters = for (_ <- 1 to countOfFilter) yield system.actorOf(FilterActor.props(doFilter(mappers)))
 
       sourceList.foreach(file => {
-        filters(i) ! file
-        i = if (i == countOfFilter - 1) 0 else i + 1
+        filters(counter) ! file
+        counter = if (counter == countOfFilter - 1) 0 else counter + 1
       })
 
     }

@@ -1,7 +1,5 @@
 package zadanie1
 
-import java.io.PrintWriter
-
 import akka.actor.{Actor, Props}
 
 
@@ -16,11 +14,6 @@ class ReduceActor(reduce: Array[(String, Int)] => Unit) extends Actor {
       reducedData = (reducedData :+ (key, value)).groupBy(_._1).map {
         case (key, values) => (key, values.map(_._2).toList.sum)
       }.toArray
-    //      val writer = new PrintWriter(s"${outputPath}/cars-${index}.csv")
-    //      reducedData.foreach {
-    //        case (key, value) => writer.write(s"${key},${value}\n")
-    //      }
-    //      writer.close()
       reduce(reducedData)
   }
 }

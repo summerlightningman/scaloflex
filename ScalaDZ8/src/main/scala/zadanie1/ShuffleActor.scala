@@ -2,9 +2,6 @@ package zadanie1
 
 import akka.actor.{Actor, ActorRef, Props}
 
-import scala.collection.parallel.immutable
-import scala.collection.{Map, mutable}
-
 
 class ShuffleActor(reducers: Seq[ActorRef]) extends Actor {
 

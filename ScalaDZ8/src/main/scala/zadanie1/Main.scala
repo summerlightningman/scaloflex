@@ -7,10 +7,7 @@ import zadanie1.ShuffleActor.ShuffleData
 
 
 object Main {
-
-
   def main(args: Array[String]): Unit = {
-
 
     val inputPath = s"${System.getProperty("user.dir")}/src/main/resources/source"
 
