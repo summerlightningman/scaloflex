@@ -6,6 +6,8 @@ trait Filter extends Types {
 
   class FilterActor(method: FilterMethod, mapShuffle: ActorRef) extends Actor with ActorLogging {
 
+    import FilterActor._
+
     override def preStart(): Unit = log.info("FilterActor has been started!")
 
     override def receive: Receive = {
@@ -18,9 +20,7 @@ trait Filter extends Types {
   }
 
   object FilterActor {
-    def props(method: FilterMethod, map: ActorRef) = Props(new FilterActor(method, map))
-
-    case object End
+    def props(method: FilterMethod, mapShuffle: ActorRef) = Props(new FilterActor(method, mapShuffle))
 
   }
 

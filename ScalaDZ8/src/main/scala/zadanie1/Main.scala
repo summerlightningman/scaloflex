@@ -21,14 +21,16 @@ object Main extends Types {
 
     def myFilter(line: Line): Boolean = line.split(",").toSeq.length == 6
 
+    // #####
     def myMap(line: String): Data = {
       val info = line.split(",").map(_.trim).toSeq
-      Data(s"${info(2)} ${info(3)} (${info(4)})", 1)
+      Car(s"${info(2)} ${info(3)} (${info(4)})", 1)
     }
 
+    // #####
     def myReduce(dataList: Seq[Data], data: Data): Seq[Data] = {
       (dataList :+ data).groupBy(_.key).map {
-        case (key, values) => Data(key, values.map(_.value).toList.sum)
+        case (key, values) => Car(key, values.map(_.value).toList.sum)
       }.toSeq
     }
 
@@ -39,7 +41,7 @@ object Main extends Types {
 
   }
 
-  case class Car(brand: String, model: String, year: String)
+  case class Car(key: String, value: Int)
 
 }
 

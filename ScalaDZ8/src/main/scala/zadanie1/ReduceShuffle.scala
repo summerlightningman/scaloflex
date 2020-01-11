@@ -4,7 +4,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 
 trait ReduceShuffle extends Types {
 
-  class ShuffleActor(reducers: Seq[ActorRef]) extends Actor with ActorLogging {
+  class ReduceShuffleActor(reducers: Seq[ActorRef]) extends Actor with ActorLogging {
 
     var keys: Array[(Int, Seq[Key])] = (for (i <- reducers.indices) yield (i, Seq[Key]())).toArray
 
@@ -25,8 +25,8 @@ trait ReduceShuffle extends Types {
     override def postStop(): Unit = log.info("ReduceShuffleActor has been shut down!")
   }
 
-  object ShuffleActor {
-    def props(reducers: Seq[ActorRef]) = Props(new ShuffleActor(reducers))
+  object ReduceShuffleActor {
+    def props(reducers: Seq[ActorRef]) = Props(new ReduceShuffleActor(reducers))
 
   }
 

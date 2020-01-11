@@ -6,6 +6,7 @@ import akka.actor.ActorSystem
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.io.Source
 
 
 case object Stream extends Types {
@@ -31,35 +32,44 @@ case object Stream extends Types {
     def reduce(countOfReduce: Int)(doReduce: ReduceMethod): Stream = {
       Stream(countOfFilter, countOfMap, countOfReduce, doFilter, doMap, doReduce)
     }
+
+
   }
 
   case class Stream(countOfFilter: Int,
                     countOfMap: Int,
                     countOfReduce: Int,
-                    doFilter: FilterMethod,
-                    doMap: MapMethod,
-                    doReduce: ReduceMethod) extends Types {
+                    filter: FilterMethod,
+                    map: MapMethod,
+                    reduce: ReduceMethod) extends Filter with Map with Reduce with MapShuffle with ReduceShuffle with Ender {
+
     val outputPath = s"${System.getProperty("user.dir")}/src/main/resources/output"
 
     def run(sourceList: Seq[File]): Future[Unit] = {
-      Future {
-        val system = ActorSystem("cars")
+      val system = ActorSystem("cars")
 
-        var counter = 0
+      val reducers = for (i <- 1 to countOfReduce) yield system.actorOf(ReduceActor.props(reduce), s"reduceActor - $i")
+      val reduceShuffle = system.actorOf(ReduceShuffleActor.props(reducers), "reduceShuffle")
+      val mappers = for (i <- 1 to countOfMap) yield system.actorOf(MapActor.props(map, reduceShuffle), s"mapActor - $i")
+      val mapShuffle = system.actorOf(MapShuffleActor.props(mappers), "mapShuffle")
+      val filters = for (i <- 1 to countOfFilter) yield system.actorOf(FilterActor.props(filter, mapShuffle), s"filterActor - $i")
+      val ender = system.actorOf(EnderActor.props())
 
-        val reducers = for (i <- 1 to countOfReduce) yield system.actorOf(ReduceActor.props(doReduce(i, outputPath)))
-        val shuffleActor = system.actorOf(ShuffleActor.props(reducers))
-        val mappers = for (_ <- 1 to countOfMap) yield system.actorOf(MapActor.props(doMap(shuffleActor)))
-        val filters = for (_ <- 1 to countOfFilter) yield system.actorOf(FilterActor.props(doFilter(mappers)))
-
-        sourceList.foreach(file => {
-          filters(counter) ! file
-          counter = if (counter == countOfFilter - 1) 0 else counter + 1
-        })
-
+      sourceList.foreach {
+        file: File =>
+          val source = Source.fromFile(file)
+          source.getLines().foreach(filters(sourceList.indexOf(file) % countOfFilter) ! _)
+          source.close()
       }
+
+//      ender ? Query
+
     }
+
+    case object Query
+
   }
 
 }
+
 
