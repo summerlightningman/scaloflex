@@ -12,12 +12,12 @@ class MapSpec
     with ImplicitSender {
 
 
-  "MapExecutor" should "apply map function" in {
+  val map: Int => Seq[(String, Double)] = x => Seq("key" -> x / 15d)
+  val shuffle = TestProbe()
 
-    val key = "key"
-    val map: Int => Seq[(String, Double)] = x => Seq(key -> x / 15d)
-    val shuffle = TestProbe()
+  "MapExecutor" should "apply map function" in {
     val handler = new MapTest
+    val key = "key"
     val mapExecutor = system.actorOf(handler.MapExecutor.props(map, shuffle.ref))
 
     val data = 10
@@ -26,14 +26,23 @@ class MapSpec
     shuffle.expectMsg(expectMessage)
   }
 
-  "MapExecutor" should "receive LAST" in {
-    val key = "key"
-    val map: Int => Seq[(String, Double)] = x => Seq(key -> x / 15d)
-    val shuffle = TestProbe()
+  "MapExecutor" should "receive END" in {
     val handler = new MapTest
     val mapExecutor = system.actorOf(handler.MapExecutor.props(map, shuffle.ref))
     mapExecutor ! handler.MasterExecutor.End
     shuffle.expectMsg(handler.MasterExecutor.End)
+  }
+
+  "Reader" should "receive LastDone" in {
+    val handler = new MapTest
+    val reader = TestProbe()
+    val mapExecutor = reader.childActorOf(handler.MapExecutor.props(map, TestProbe().ref))
+    mapExecutor ! handler.DataReader.Last
+    reader.expectMsg(handler.MapExecutor.LastDone)
+  }
+
+  override def afterAll: Unit = {
+    TestKit.shutdownActorSystem(system)
   }
 
   private class MapTest extends Map with Reader with Master with Shuffle with Reducer with Writer {
@@ -41,6 +50,7 @@ class MapSpec
     override type ParsedValue = Int
     override type Key = String
     override type MappedValue = Double
+
   }
 
 }
