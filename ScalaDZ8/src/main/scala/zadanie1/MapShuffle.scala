@@ -6,6 +6,8 @@ trait MapShuffle extends Types {
 
   class MapShuffleActor(mappers: Seq[ActorRef]) extends Actor with ActorLogging {
 
+    import MapShuffleActor._
+
     override def preStart(): Unit = log.info("MapShuffleActor has been started!")
 
     override def receive: Receive = {
@@ -19,7 +21,7 @@ trait MapShuffle extends Types {
   }
 
   object MapShuffleActor {
-    def props(mappers: Seq[ActorRef]): Unit = Props(new MapShuffleActor(mappers))
+    def props(mappers: Seq[ActorRef]): Props = Props(new MapShuffleActor(mappers))
 
   }
 

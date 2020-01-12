@@ -1,6 +1,7 @@
 package zadanie1
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import zadanie1.Main.Data
 
 trait ReduceShuffle extends Types {
 
@@ -26,7 +27,7 @@ trait ReduceShuffle extends Types {
   }
 
   object ReduceShuffleActor {
-    def props(reducers: Seq[ActorRef]) = Props(new ReduceShuffleActor(reducers))
+    def props(reducers: Seq[ActorRef]): Props = Props(new ReduceShuffleActor(reducers))
 
   }
 

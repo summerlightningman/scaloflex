@@ -20,7 +20,7 @@ trait Filter extends Types {
   }
 
   object FilterActor {
-    def props(method: FilterMethod, mapShuffle: ActorRef) = Props(new FilterActor(method, mapShuffle))
+    def props(method: FilterMethod, mapShuffle: ActorRef): Props = Props(new FilterActor(method, mapShuffle))
 
   }
 

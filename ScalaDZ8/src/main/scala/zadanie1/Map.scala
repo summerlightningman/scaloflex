@@ -18,7 +18,7 @@ trait Map extends Types {
   }
 
   object MapActor {
-    def props(method: MapMethod, reduceShuffle: ActorRef) = Props(new MapActor(method, reduceShuffle))
+    def props(method: MapMethod, reduceShuffle: ActorRef): Props = Props(new MapActor(method, reduceShuffle))
   }
 
 }

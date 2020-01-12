@@ -24,13 +24,13 @@ object Main extends Types {
     // #####
     def myMap(line: String): Data = {
       val info = line.split(",").map(_.trim).toSeq
-      Car(s"${info(2)} ${info(3)} (${info(4)})", 1)
+      Data(s"${info(2)} ${info(3)} (${info(4)})", 1)
     }
 
     // #####
     def myReduce(dataList: Seq[Data], data: Data): Seq[Data] = {
       (dataList :+ data).groupBy(_.key).map {
-        case (key, values) => Car(key, values.map(_.value).toList.sum)
+        case (key, values) => Data(key, values.map(_.value).toList.sum)
       }.toSeq
     }
 
@@ -41,7 +41,7 @@ object Main extends Types {
 
   }
 
-  case class Car(key: String, value: Int)
+  case class Data(key: Key, value: Int)
 
 }
 

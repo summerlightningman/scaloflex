@@ -1,6 +1,7 @@
 package zadanie1
 
 import akka.actor.{Actor, ActorLogging, Props}
+import zadanie1.Main.Data
 
 
 trait Reduce extends Types {
@@ -18,7 +19,7 @@ trait Reduce extends Types {
   }
 
   object ReduceActor {
-    def props(reduce: ReduceMethod) = Props(new ReduceActor(reduce))
+    def props(reduce: ReduceMethod): Props = Props(new ReduceActor(reduce))
   }
 
 }
