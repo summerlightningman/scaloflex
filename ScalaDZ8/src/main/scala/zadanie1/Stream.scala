@@ -4,8 +4,8 @@ import akka.actor.ActorSystem
 import akka.pattern._
 import akka.util.Timeout
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent._
 import scala.concurrent.duration._
 
 
@@ -37,35 +37,37 @@ case object Stream {
       with Mapper
       with Reducer
       with MapShuffle
-      with ReduceShuffle {
+      with ReduceShuffle
+      with EndShuffle
+      with Master {
 
     override type Line = F
     override type Data = M
 
-    def run(sourceList: Seq[F], system: ActorSystem): Unit = {
-      val reducers = (0 to countOfReduce).map(i => system.actorOf(ReduceActor.props(reduce), s"reduceActor-$i"))
+    def run(sourceList: Seq[F], system: ActorSystem): Future[Map[Key, Int]] = {
+
+
+      val endShuffle = system.actorOf(EndShuffleActor.props(countOfReduce), "endShuffle")
+      val reducers = (0 to countOfReduce).map(i => system.actorOf(ReduceActor.props(reduce, endShuffle), s"reduceActor-$i"))
       val reduceShuffle = system.actorOf(ReduceShuffleActor.props(reducers), "reduceShuffle")
       val mappers = (0 to countOfMap).map(i => system.actorOf(MapActor.props(map, reduceShuffle), s"mapActor-$i"))
       val mapShuffle = system.actorOf(MapShuffleActor.props(mappers), "mapShuffle")
       val filters = (0 to countOfFilter).map(i => system.actorOf(FilterActor.props(filter, mapShuffle), s"filterActor-$i"))
+      val master = system.actorOf(MasterActor.props(filters))
 
-
-      //      implicit val timeout: Timeout = Timeout(30.seconds)
+      implicit val timeout: Timeout = Timeout(30.seconds)
 
       sourceList.foreach(line => filters(sourceList.indexOf(line) % filters.length) ! line)
       filters.foreach(_ ! End)
+      (master ? Query).mapTo[Map[Key, Int]]
 
-      //      (filters(0) ? Query).map {
-      //        case x: Map[Key, M] => Right(x)
-      //        case _ => Left("Unknown type")
-      //      }
     }
+
   }
 
   case object Query
 
   case object End
-
 }
 
 

@@ -1,7 +1,7 @@
 package zadanie1
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import zadanie1.Stream.End
+import zadanie1.Stream.{End, Query}
 
 trait Mapper extends Types {
 
@@ -13,7 +13,9 @@ trait Mapper extends Types {
       case line: Line =>
         reduceShuffle ! method(line)
       case End =>
+        log.info("End has received")
         reduceShuffle.forward(End)
+
     }
 
     override def unhandled(message: Any): Unit = {

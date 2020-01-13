@@ -8,6 +8,7 @@ trait ReduceShuffle extends Types {
   class ReduceShuffleActor(reducers: Seq[ActorRef]) extends Actor with ActorLogging {
 
     var keys: Array[(Int, Seq[Key])] = reducers.indices.map(i => (i, Seq[Key]())).toArray
+    var j = 0
 
     override def preStart(): Unit = log.info("ReduceShuffleActor has been started!")
 
@@ -21,7 +22,11 @@ trait ReduceShuffle extends Types {
             reducers(minKeys) ! (key, value)
             keys(minKeys) = (keys(minKeys)._1, keys(minKeys)._2 :+ key)
         }
-      case End => reducers.foreach(_ ! End)
+      case End =>
+        log.info("End has received")
+        if (j == reducers.length) reducers.foreach(_ ! End)
+        else j += 1
+        sender.forward(End)
     }
 
     override def unhandled(message: Any): Unit = {

@@ -13,7 +13,7 @@ object Main extends Types {
   def main(args: Array[String]): Unit = {
 
     val sourceList: Seq[String] = {
-      val file = new File(s"${System.getProperty("user.dir")}/src/main/resources/source/cars.csv")
+      val file = new File(s"${System.getProperty("user.dir")}/src/main/resources/cars.csv")
       if (file.exists) {
         val source = Source.fromFile(file)
         val lines = source.getLines().toList
@@ -25,7 +25,7 @@ object Main extends Types {
       }
     }
 
-    def myFilter(line: String): Boolean = line.split(",").toSeq.length == 7
+    def myFilter(line: String): Boolean = (line.split(",").toSeq.length == 7)
 
     def myMap(line: String): (String, Int) = {
       val info = line.split(",").map(_.trim).toSeq.map(_.toLowerCase.capitalize)
