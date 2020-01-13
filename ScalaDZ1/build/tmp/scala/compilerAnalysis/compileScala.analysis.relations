@@ -1,17 +1,17 @@
 products:
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> D:\prjos\scala\scalaDZ1\build\classes\scala\main\zadanie1\HelloWorld$.class
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> D:\prjos\scala\scalaDZ1\build\classes\scala\main\zadanie1\HelloWorld$delayedInit$body.class
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> D:\prjos\scala\scalaDZ1\build\classes\scala\main\zadanie1\HelloWorld.class
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie2\Main.scala -> D:\prjos\scala\scalaDZ1\build\classes\scala\main\zadanie2\Main$.class
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie2\Main.scala -> D:\prjos\scala\scalaDZ1\build\classes\scala\main\zadanie2\Main.class
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> D:\prjos\scala\ScalaDZ1\build\classes\scala\main\zadanie1\HelloWorld$.class
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> D:\prjos\scala\ScalaDZ1\build\classes\scala\main\zadanie1\HelloWorld$delayedInit$body.class
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> D:\prjos\scala\ScalaDZ1\build\classes\scala\main\zadanie1\HelloWorld.class
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie2\Main.scala -> D:\prjos\scala\ScalaDZ1\build\classes\scala\main\zadanie2\Main$.class
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie2\Main.scala -> D:\prjos\scala\ScalaDZ1\build\classes\scala\main\zadanie2\Main.class
 binary dependencies:
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> C:\Users\stive\.gradle\caches\modules-2\files-2.1\org.scala-lang\scala-library\2.12.10\3509860bc2e5b3da001ed45aca94ffbe5694dbda\scala-library-2.12.10.jar
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie2\Main.scala -> C:\Users\stive\.gradle\caches\modules-2\files-2.1\org.scala-lang\scala-library\2.12.10\3509860bc2e5b3da001ed45aca94ffbe5694dbda\scala-library-2.12.10.jar
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> C:\Users\stive\.gradle\caches\modules-2\files-2.1\org.scala-lang\scala-library\2.12.10\3509860bc2e5b3da001ed45aca94ffbe5694dbda\scala-library-2.12.10.jar
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie2\Main.scala -> C:\Users\stive\.gradle\caches\modules-2\files-2.1\org.scala-lang\scala-library\2.12.10\3509860bc2e5b3da001ed45aca94ffbe5694dbda\scala-library-2.12.10.jar
 source dependencies:
 external dependencies:
 class names:
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> zadanie1.HelloWorld
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> zadanie1.HelloWorld$
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> zadanie1.HelloWorld$delayedInit$body
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie2\Main.scala -> zadanie2.Main
-   D:\prjos\scala\scalaDZ1\src\main\scala\zadanie2\Main.scala -> zadanie2.Main$
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> zadanie1.HelloWorld
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> zadanie1.HelloWorld$
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie1\HelloWorld.scala -> zadanie1.HelloWorld$delayedInit$body
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie2\Main.scala -> zadanie2.Main
+   D:\prjos\scala\ScalaDZ1\src\main\scala\zadanie2\Main.scala -> zadanie2.Main$

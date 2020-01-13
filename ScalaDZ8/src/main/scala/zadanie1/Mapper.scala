@@ -1,8 +1,9 @@
 package zadanie1
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import zadanie1.Stream.End
 
-trait Map extends Types {
+trait Mapper extends Types {
 
   class MapActor(method: MapMethod, reduceShuffle: ActorRef) extends Actor with ActorLogging {
 
@@ -11,6 +12,13 @@ trait Map extends Types {
     override def receive: Receive = {
       case line: Line =>
         reduceShuffle ! method(line)
+      case End =>
+        reduceShuffle.forward(End)
+    }
+
+    override def unhandled(message: Any): Unit = {
+      log.info("Has received a unknown message " + message)
+      sender ! "Cannot handle your message: " + message
     }
 
     override def postStop(): Unit = log.info("MapActor has been shut down!")

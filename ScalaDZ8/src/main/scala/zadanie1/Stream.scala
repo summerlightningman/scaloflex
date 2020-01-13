@@ -1,76 +1,70 @@
 package zadanie1
 
-import java.io.File
-
 import akka.actor.ActorSystem
 import akka.pattern._
 import akka.util.Timeout
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.io.Source
 
 
-case object Stream extends Types {
-  val system: ActorSystem = ActorSystem("cars")
+case object Stream {
 
-  def filter(countOfFilter: Int)(doFilter: FilterMethod): FilterObject = {
-    FilterObject(countOfFilter, doFilter)
+  def filter[F](countOfFilter: Int)(doFilter: F => Boolean): FilterObject[F] = {
+    FilterObject[F](countOfFilter, doFilter)
   }
 
-  case class FilterObject(countOfFilter: Int, doFilter: FilterMethod) {
-    def map(countOfMap: Int)(doMap: MapMethod): MapObject = {
-      MapObject(countOfMap, doMap, countOfFilter, doFilter)
+  case class FilterObject[F](countOfFilter: Int, doFilter: F => Boolean) {
+    def map[M](countOfMap: Int)(doMap: F => M): MapObject[F, M] = {
+      MapObject[F, M](countOfMap, doMap, countOfFilter, doFilter)
     }
   }
 
-  case class MapObject(countOfMap: Int, map: MapMethod, countOfFilter: Int, filter: FilterMethod) {
-    def reduce(countOfReduce: Int)(reduce: ReduceMethod): Stream = {
-      Stream(countOfFilter, countOfMap, countOfReduce, filter, map, reduce)
+  case class MapObject[F, M](countOfMap: Int, map: F => M, countOfFilter: Int, filter: F => Boolean) {
+    def reduce(countOfReduce: Int)(reduce: (Seq[M], M) => Seq[M]): Stream[F, M] = {
+      Stream[F, M](countOfFilter, countOfMap, countOfReduce, filter, map, reduce)
     }
   }
 
-  case class Stream(countOfFilter: Int,
-                    countOfMap: Int,
-                    countOfReduce: Int,
-                    filter: FilterMethod,
-                    map: MapMethod,
-                    reduce: ReduceMethod)
+  case class Stream[F, M](countOfFilter: Int,
+                          countOfMap: Int,
+                          countOfReduce: Int,
+                          filter: F => Boolean,
+                          map: F => M,
+                          reduce: (Seq[M], M) => Seq[M])
     extends Filter
-      with Map
-      with Reduce
+      with Mapper
+      with Reducer
       with MapShuffle
-      with ReduceShuffle
-      with Ender {
+      with ReduceShuffle {
 
-    val outputPath = s"${System.getProperty("user.dir")}/src/main/resources/output"
+    override type Line = F
+    override type Data = M
 
-    def run(sourceList: Seq[File]): Future[Seq[Map]] = {
-      val system = ActorSystem("cars")
-
-      val reducers = for (i <- 1 to countOfReduce) yield system.actorOf(ReduceActor.props(reduce), s"reduceActor - $i")
+    def run(sourceList: Seq[F], system: ActorSystem): Unit = {
+      val reducers = (0 to countOfReduce).map(i => system.actorOf(ReduceActor.props(reduce), s"reduceActor-$i"))
       val reduceShuffle = system.actorOf(ReduceShuffleActor.props(reducers), "reduceShuffle")
-      val mappers = for (i <- 1 to countOfMap) yield system.actorOf(MapActor.props(map, reduceShuffle), s"mapActor - $i")
-      val mapShuffle = system.actorOf(MapShuffleActor.props(mappers))
-      val filters = for (i <- 1 to countOfFilter) yield system.actorOf(FilterActor.props(filter, mapShuffle), s"filterActor - $i")
-      val ender = system.actorOf(EnderActor.props(countOfReduce))
+      val mappers = (0 to countOfMap).map(i => system.actorOf(MapActor.props(map, reduceShuffle), s"mapActor-$i"))
+      val mapShuffle = system.actorOf(MapShuffleActor.props(mappers), "mapShuffle")
+      val filters = (0 to countOfFilter).map(i => system.actorOf(FilterActor.props(filter, mapShuffle), s"filterActor-$i"))
 
-      sourceList.foreach {
-        file: File =>
-          val source = Source.fromFile(file)
-          source.getLines().foreach(filters(sourceList.indexOf(file) % countOfFilter) ! _)
-          source.close()
-      }
 
-      implicit val timeout: Timeout = Timeout(30.seconds)
-      val result: Future[Seq[Map]] = ender ? Query
+      //      implicit val timeout: Timeout = Timeout(30.seconds)
 
+      sourceList.foreach(line => filters(sourceList.indexOf(line) % filters.length) ! line)
+      filters.foreach(_ ! End)
+
+      //      (filters(0) ? Query).map {
+      //        case x: Map[Key, M] => Right(x)
+      //        case _ => Left("Unknown type")
+      //      }
     }
-
-    case object Query
-
   }
+
+  case object Query
+
+  case object End
 
 }
 

@@ -1,19 +1,23 @@
 package zadanie1
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import zadanie1.Stream.End
 
 trait Filter extends Types {
 
   class FilterActor(method: FilterMethod, mapShuffle: ActorRef) extends Actor with ActorLogging {
 
-    import FilterActor._
-
     override def preStart(): Unit = log.info("FilterActor has been started!")
 
     override def receive: Receive = {
-      case lines: Seq[Line] =>
-        val rows: Seq[Line] = lines.filter(method)
-        rows.foreach(mapShuffle ! _)
+      case line: Line =>
+        if (method(line)) mapShuffle ! line
+      case End => mapShuffle.forward(End)
+    }
+
+    override def unhandled(message: Any): Unit = {
+      log.info("Has received a unknown message " + message)
+      sender ! "Cannot handle your message: " + message
     }
 
     override def postStop(): Unit = log.info("FilterActor has been shut down!")

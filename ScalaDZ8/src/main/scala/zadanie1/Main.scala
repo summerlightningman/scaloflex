@@ -2,46 +2,50 @@ package zadanie1
 
 import java.io.File
 
+import akka.actor.ActorSystem
+
+import scala.io.Source
+
 
 object Main extends Types {
+  override type Line = String
 
   def main(args: Array[String]): Unit = {
 
-    val inputPath = s"${System.getProperty("user.dir")}/src/main/resources/source"
-
-    val sourceList: Seq[File] = {
-      val dir = new File(inputPath)
-      if (dir.exists()) {
-        dir.listFiles.filter(_.isFile).toSeq
+    val sourceList: Seq[String] = {
+      val file = new File(s"${System.getProperty("user.dir")}/src/main/resources/source/cars.csv")
+      if (file.exists) {
+        val source = Source.fromFile(file)
+        val lines = source.getLines().toList
+        source.close()
+        lines
       } else {
-        println("This directory doesn't exists")
-        Seq.empty[File]
+        println("This file doesn't exists")
+        Seq.empty[String]
       }
     }
 
-    def myFilter(line: Line): Boolean = line.split(",").toSeq.length == 6
+    def myFilter(line: String): Boolean = line.split(",").toSeq.length == 7
 
-    // #####
-    def myMap(line: String): Data = {
-      val info = line.split(",").map(_.trim).toSeq
-      Data(s"${info(2)} ${info(3)} (${info(4)})", 1)
+    def myMap(line: String): (String, Int) = {
+      val info = line.split(",").map(_.trim).toSeq.map(_.toLowerCase.capitalize)
+      (s"${info(2)} ${info(3)} (${info(4)})", 1)
     }
 
-    // #####
-    def myReduce(dataList: Seq[Data], data: Data): Seq[Data] = {
-      (dataList :+ data).groupBy(_.key).map {
-        case (key, values) => Data(key, values.map(_.value).toList.sum)
+    def myReduce(dataList: Seq[(String, Int)], data: (String, Int)): Seq[(String, Int)] = {
+      (dataList :+ data).groupBy(_._1).map {
+        case (key, values) => (key, values.map(_._2).toList.sum)
       }.toSeq
     }
 
+    val system = ActorSystem("cars")
+
     val stream = Stream.filter(10)(myFilter).map(3)(myMap).reduce(4)(myReduce)
 
-    stream.run(sourceList)
-
+    println(stream.run(sourceList, system))
 
   }
 
-  case class Data(key: Key, value: Int)
 
 }
 

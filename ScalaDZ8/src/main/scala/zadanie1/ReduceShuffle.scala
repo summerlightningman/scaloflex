@@ -1,26 +1,32 @@
 package zadanie1
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import zadanie1.Main.Data
+import zadanie1.Stream.End
 
 trait ReduceShuffle extends Types {
 
   class ReduceShuffleActor(reducers: Seq[ActorRef]) extends Actor with ActorLogging {
 
-    var keys: Array[(Int, Seq[Key])] = (for (i <- reducers.indices) yield (i, Seq[Key]())).toArray
+    var keys: Array[(Int, Seq[Key])] = reducers.indices.map(i => (i, Seq[Key]())).toArray
 
     override def preStart(): Unit = log.info("ReduceShuffleActor has been started!")
 
     override def receive: Receive = {
-      case Data(key, value) =>
+      case (key: Key, value: Int) =>
         keys.find(_._2.contains(key)) match {
           case Some((i, _)) =>
-            reducers(i) ! Data(key, value)
+            reducers(i) ! (key, value)
           case None =>
             val minKeys: Int = keys.minBy(_._2.length)._1
-            reducers(minKeys) ! Data(key, value)
+            reducers(minKeys) ! (key, value)
             keys(minKeys) = (keys(minKeys)._1, keys(minKeys)._2 :+ key)
         }
+      case End => reducers.foreach(_ ! End)
+    }
+
+    override def unhandled(message: Any): Unit = {
+      log.info("Has received a unknown message " + message)
+      sender ! "Cannot handle your message: " + message
     }
 
     override def postStop(): Unit = log.info("ReduceShuffleActor has been shut down!")

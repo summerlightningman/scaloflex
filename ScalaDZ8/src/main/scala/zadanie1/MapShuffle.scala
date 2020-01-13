@@ -1,22 +1,26 @@
 package zadanie1
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import zadanie1.Stream.End
 
 trait MapShuffle extends Types {
 
   class MapShuffleActor(mappers: Seq[ActorRef]) extends Actor with ActorLogging {
 
-    import MapShuffleActor._
-
     override def preStart(): Unit = log.info("MapShuffleActor has been started!")
 
-    override def receive: Receive = {
-      case lines: Seq[Line] =>
-        lines.foreach {
-          line: Line => mappers(lines.indexOf(line) % mappers.length) ! line
-        }
-    }
+    private var i = 0
 
+    override def receive: Receive = {
+      case line: Line =>
+        mappers(i) ! line
+        i = if (i == mappers.length-1) 0 else (i + 1)
+      case End => mappers.foreach(_ ! End)
+    }
+    override def unhandled(message: Any): Unit = {
+      log.info("Has received a unknown message " + message)
+      sender ! "Cannot handle your message: " + message
+    }
     override def postStop(): Unit = log.info("MapShuffleActor has been shut down!")
   }
 

@@ -5,6 +5,7 @@ import java.util.Scanner
 
 object Main {
   def main(args: Array[String]): Unit = {
+
     println("Greetings! What exercise are you want to execute?") // главное меню
     println("1 - Simple numbers") // при нажатии на 1 - поиск простого числа
     println("2 - Fibonacci numbers") // 2 - вывод чисел Фибоначчи
