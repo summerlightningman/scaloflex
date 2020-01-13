@@ -6,6 +6,7 @@ import akka.actor.ActorSystem
 import akka.pattern._
 import akka.util.Timeout
 
+import scala.collection.immutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
@@ -15,28 +16,28 @@ import scala.io.Source
 case object Stream extends Types {
   val system: ActorSystem = ActorSystem("cars")
 
-  def filter(countOfFilter: Int)(doFilter: FilterMethod): FilterObject = {
-    FilterObject(countOfFilter, doFilter)
+  def filter[A](countOfFilter: Int)(doFilter: A => Boolean): FilterObject[A] = {
+    FilterObject[A](countOfFilter, doFilter)
   }
 
-  case class FilterObject(countOfFilter: Int, doFilter: FilterMethod) {
-    def map(countOfMap: Int)(doMap: MapMethod): MapObject = {
+  case class FilterObject[A](countOfFilter: Int, doFilter: A => Boolean) {
+    def map[B](countOfMap: Int)(doMap: A => B): MapObject[A, B] = {
       MapObject(countOfMap, doMap, countOfFilter, doFilter)
     }
   }
 
-  case class MapObject(countOfMap: Int, map: MapMethod, countOfFilter: Int, filter: FilterMethod) {
-    def reduce(countOfReduce: Int)(reduce: ReduceMethod): Stream = {
+  case class MapObject[A, B](countOfMap: Int, map: A => B, countOfFilter: Int, filter: A => Boolean) {
+    def reduce(countOfReduce: Int)(reduce: (B, B) => B): Stream[A, B] = {
       Stream(countOfFilter, countOfMap, countOfReduce, filter, map, reduce)
     }
   }
 
-  case class Stream(countOfFilter: Int,
+  case class Stream[A, B](countOfFilter: Int,
                     countOfMap: Int,
                     countOfReduce: Int,
-                    filter: FilterMethod,
-                    map: MapMethod,
-                    reduce: ReduceMethod)
+                    filter: A => Boolean,
+                    map: A => B,
+                    reduce: (B, B) => B)
     extends Filter
       with Map
       with Reduce
@@ -44,10 +45,8 @@ case object Stream extends Types {
       with ReduceShuffle
       with Ender {
 
-    val outputPath = s"${System.getProperty("user.dir")}/src/main/resources/output"
 
-    def run(sourceList: Seq[File]): Future[Seq[Map]] = {
-      val system = ActorSystem("cars")
+    def run(sourceList: Seq[A])(system: ActorSystem): Future[Either[String, immutable.Map[Key, B]]] = {
 
       val reducers = for (i <- 1 to countOfReduce) yield system.actorOf(ReduceActor.props(reduce), s"reduceActor - $i")
       val reduceShuffle = system.actorOf(ReduceShuffleActor.props(reducers), "reduceShuffle")
@@ -64,12 +63,17 @@ case object Stream extends Types {
       }
 
       implicit val timeout: Timeout = Timeout(30.seconds)
-      val result: Future[Seq[Map]] = ender ? Query
+      val result: Future[Either[String, immutable.Map[Key, B]]] = (ender ? Query).map {
+        case x: immutable.Map[Key, B] => Right(x)
+        case _ => Left("Unknown type")
+      }
 
     }
 
     case object Query
 
+    override type Line = A
+    override type Data = B
   }
 
 }

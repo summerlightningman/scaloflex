@@ -1,13 +1,14 @@
 package zadanie1
 
-import zadanie1.Main.Data
 
 trait Types {
-  type Line = String
+
+  type Line
+  type Data
 
   type FilterMethod = Line => Boolean
   type MapMethod = Line => Data
-  type ReduceMethod = (Seq[Data], Data) => Seq[Data]
+  type ReduceMethod = (Data, Data) => Data]
 
   type Key = String
 

@@ -11,7 +11,7 @@ trait Filter extends Types {
     override def preStart(): Unit = log.info("FilterActor has been started!")
 
     override def receive: Receive = {
-      case lines: Seq[Line] =>
+      case FilterData(line) =>
         val rows: Seq[Line] = lines.filter(method)
         rows.foreach(mapShuffle ! _)
     }
@@ -22,6 +22,8 @@ trait Filter extends Types {
   object FilterActor {
     def props(method: FilterMethod, mapShuffle: ActorRef): Props = Props(new FilterActor(method, mapShuffle))
 
+
+    case class FilterData(elems: Line)
   }
 
 }

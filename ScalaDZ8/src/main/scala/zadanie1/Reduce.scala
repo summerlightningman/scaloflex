@@ -9,10 +9,11 @@ trait Reduce extends Types {
   class ReduceActor(method: ReduceMethod) extends Actor with ActorLogging {
     override def preStart(): Unit = log.info("FilterActor has been started!")
 
-    private var reducedData = Seq[Data]()
+    private var reducedData = Map[Key, Data]()
 
     override def receive: Receive = {
       case data: Data => reducedData = method(reducedData, data)
+      case End =>
     }
 
     override def postStop(): Unit = log.info("FilterActor has been shut down!")

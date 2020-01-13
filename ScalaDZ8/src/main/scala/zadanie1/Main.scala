@@ -3,7 +3,7 @@ package zadanie1
 import java.io.File
 
 
-object Main extends Types {
+object Main {
 
   def main(args: Array[String]): Unit = {
 
@@ -19,29 +19,28 @@ object Main extends Types {
       }
     }
 
-    def myFilter(line: Line): Boolean = line.split(",").toSeq.length == 6
+    def myFilter(line: Int): Boolean = line > 0
 
     // #####
-    def myMap(line: String): Data = {
-      val info = line.split(",").map(_.trim).toSeq
-      Data(s"${info(2)} ${info(3)} (${info(4)})", 1)
+    def myMap(line: Int): (String, Int) = {
+      line.toString -> line * 10
     }
 
     // #####
-    def myReduce(dataList: Seq[Data], data: Data): Seq[Data] = {
-      (dataList :+ data).groupBy(_.key).map {
-        case (key, values) => Data(key, values.map(_.value).toList.sum)
-      }.toSeq
+    def myReduce(x1: Int , x2: Int): Int = {
+      x1 + x2
     }
+
+    val list = List(1, 2, 3)
 
     val stream = Stream.filter(10)(myFilter).map(3)(myMap).reduce(4)(myReduce)
 
-    stream.run(sourceList)
+    stream.run(list)
 
 
   }
 
-  case class Data(key: Key, value: Int)
 
+  override type Line = String
 }
 
