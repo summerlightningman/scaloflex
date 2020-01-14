@@ -13,15 +13,15 @@ trait MapShuffle extends Types {
     private var j = 0
 
     override def receive: Receive = {
-      case line: Line =>
-        mappers(i) ! line
-        i = if (i == mappers.length - 1) 0 else (i + 1)
       case End =>
         log.info("End has received")
         if (j == mappers.length) mappers.foreach(_.forward(End))
         else j += 1
       case Query =>
         mappers.foreach(_.forward(Query))
+      case line: Line =>
+        mappers(i) ! line
+        i = if (i == mappers.length - 1) 0 else (i + 1)
     }
 
     override def unhandled(message: Any): Unit = {

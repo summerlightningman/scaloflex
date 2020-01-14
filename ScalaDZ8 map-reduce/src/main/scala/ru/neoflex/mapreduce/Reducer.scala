@@ -27,6 +27,7 @@ trait Reducer extends DataTypes {
       case End =>
         reducedData.foreach { case (_, data) => dataWriter ! WriteData(data) }
         dataWriter.forward(End)
+
     }
 
     override def preStart(): Unit = {

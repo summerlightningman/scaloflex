@@ -2,11 +2,11 @@ package zadanie1
 
 trait Types {
   type Line
-  type Data
+//  type Data
   type Key = String
 
   type FilterMethod = Line => Boolean
-  type MapMethod = Line => Data
-  type ReduceMethod = (Seq[Data], Data) => Seq[Data]
-
+  type MapMethod = Line => Row
+  type ReduceMethod = (Row, Row) => Row
+  type Row = (Key, Int)
 }

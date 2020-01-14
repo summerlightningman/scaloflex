@@ -1,7 +1,7 @@
 package zadanie1
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import zadanie1.Stream.{End, Query}
+import zadanie1.Stream.End
 
 trait Mapper extends Types {
 
@@ -10,12 +10,11 @@ trait Mapper extends Types {
     override def preStart(): Unit = log.info("MapActor has been started!")
 
     override def receive: Receive = {
-      case line: Line =>
-        reduceShuffle ! method(line)
       case End =>
         log.info("End has received")
         reduceShuffle.forward(End)
-
+      case line: Line =>
+        reduceShuffle ! method(line)
     }
 
     override def unhandled(message: Any): Unit = {

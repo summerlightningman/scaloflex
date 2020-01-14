@@ -1,8 +1,7 @@
 package zadanie1
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import zadanie1.Stream.{End, Query}
-import scala.concurrent.ExecutionContext.Implicits.global
+import zadanie1.Stream.End
 
 trait Filter extends Types {
 
@@ -11,11 +10,12 @@ trait Filter extends Types {
     override def preStart(): Unit = log.info("FilterActor has been started!")
 
     override def receive: Receive = {
-      case line: Line =>
-        if (method(line)) mapShuffle ! line
       case End =>
         log.info("End has received")
         mapShuffle.forward(End)
+      case line: Line =>
+        if (method(line)) mapShuffle ! line
+
     }
 
     override def unhandled(message: Any): Unit = {
@@ -28,7 +28,6 @@ trait Filter extends Types {
 
   object FilterActor {
     def props(method: FilterMethod, mapShuffle: ActorRef): Props = Props(new FilterActor(method, mapShuffle))
-
   }
 
 }
