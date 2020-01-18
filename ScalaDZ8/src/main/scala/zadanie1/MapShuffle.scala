@@ -9,19 +9,18 @@ trait MapShuffle extends Types {
 
     override def preStart(): Unit = log.info("MapShuffleActor has been started!")
 
-    private var i = 0
-    private var j = 0
+    private var counter = 0
 
     override def receive: Receive = {
       case End =>
         log.info("End has received")
-        if (j == mappers.length) mappers.foreach(_.forward(End))
-        else j += 1
+        if (counter == mappers.length) mappers.foreach(_.forward(End))
+        else counter += 1
       case Query =>
         mappers.foreach(_.forward(Query))
       case line: Line =>
-        mappers(i) ! line
-        i = if (i == mappers.length - 1) 0 else (i + 1)
+        mappers(counter) ! line
+        counter = if (counter == mappers.length - 1) 0 else (counter + 1)
     }
 
     override def unhandled(message: Any): Unit = {

@@ -10,15 +10,15 @@ trait ReduceShuffle extends Types {
     import ReduceShuffleActor._
 
     var keys: Array[(Int, Seq[Key])] = reducers.indices.map(i => (i, Seq[Key]())).toArray
-    var j = 0
+    var counter = 0
 
     override def preStart(): Unit = log.info("ReduceShuffleActor has been started!")
 
     override def receive: Receive = {
       case End =>
         log.info("End has received")
-        if (j == reducers.length) reducers.foreach(_ ! End)
-        else j += 1
+        if (counter == reducers.length) reducers.foreach(_ ! End)
+        else counter += 1
       case (key: Key, value: Int) =>
         keys.find(_._2.contains(key)) match {
           case Some((i, _)) =>

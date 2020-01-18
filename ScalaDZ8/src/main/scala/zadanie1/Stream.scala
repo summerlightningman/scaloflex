@@ -41,7 +41,6 @@ case object Stream extends Types {
       with Reducer
       with MapShuffle
       with ReduceShuffle
-      with EndShuffle
       with Master {
 
     override type Line = F

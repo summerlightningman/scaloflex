@@ -7,8 +7,7 @@ trait Master extends Types with Filter
   with Mapper
   with Reducer
   with MapShuffle
-  with ReduceShuffle
-  with EndShuffle {
+  with ReduceShuffle {
 
   class MasterActor(countOfFilter: Int,
                     countOfMap: Int,
