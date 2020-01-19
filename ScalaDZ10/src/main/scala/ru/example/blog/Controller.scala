@@ -1,5 +1,6 @@
 package ru.example.blog
 
+import java.sql.Statement
 import java.util.concurrent.atomic.AtomicInteger
 
 import akka.actor.ActorRef
@@ -17,7 +18,7 @@ import spray.json._
 
 import scala.concurrent.ExecutionContext
 
-class Controller(wsRoute: ActorRef)(implicit val ec: ExecutionContext) {
+class Controller(wsRoute: ActorRef, statement: Statement)(implicit val ec: ExecutionContext) {
 
   type Response = Map[String, String]
 
