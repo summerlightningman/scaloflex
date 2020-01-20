@@ -18,7 +18,7 @@ import spray.json._
 
 import scala.concurrent.ExecutionContext
 
-class Controller(wsRoute: ActorRef, statement: Statement)(implicit val ec: ExecutionContext) {
+class Controller(wsRoute: ActorRef)(implicit val ec: ExecutionContext) {
 
   type Response = Map[String, String]
 

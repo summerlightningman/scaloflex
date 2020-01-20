@@ -16,7 +16,7 @@ object PostRepository {
   def insertPost(post: Post): String = {
     // validators
     UserRepository.getUser(post.userId) match {
-      case _ : User =>
+      case _ :User =>
         if (post.text.length > 200)
           s"Post shouldn't have more 200 characters"
         else {
