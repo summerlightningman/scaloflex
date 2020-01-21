@@ -1,52 +1,45 @@
 package ru.example.blog.repository
 
-import ru.example.blog.model.{Comment, Post, User}
+import ru.example.blog.model.{Post, PostTable}
+import slick.jdbc.PostgresProfile.api._
+import slick.lifted.TableQuery
 
-import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 object PostRepository {
+  val db = Database.forConfig("database")
 
-  private val posts = ListBuffer[Post]()
+  val posts = TableQuery[PostTable]
 
-  def getAllUserPosts(userId: Int): mutable.Seq[Post] = {
-    posts.filter(_.userId == userId)
+  def getAllUserPosts(userId: Int): Seq[Post] = {
+    val select = for (post <- posts if post.userId === userId) yield post
+    val result = db.run(select.result)
+    Await.result(result, 1.second)
   }
 
-  def insertPost(post: Post): String = {
-    // validators
-    UserRepository.getUser(post.userId) match {
-      case _ :User =>
-        if (post.text.length > 200)
-          s"Post shouldn't have more 200 characters"
-        else {
-          posts.append(post)
-          s"Post has been added successfully"
-        }
-      case _ =>
-        s"User ${post.userId} not found"
-    }
+  def insertPost(post: Post): Int = {
+    val insert = posts += post
+    val result = db.run(insert)
+    Await.result(result, 1.second)
   }
 
-  def getPost(postId: Int): Either[String, (Post, ListBuffer[Comment])] = {
-    posts.find(_.id == postId) match {
-      case Some(post: Post) => Right((post, CommentRepository.getAllPostComments(post.id)))
-      case None => Left("Post $postId not found")
-    }
+  def getPost(postId: Int): Seq[Post] = {
+    val select = for {post <- posts if post.postId === postId} yield post
+    val result = db.run(select.result)
+    Await.result(result, 1.second)
   }
 
 
   def getAllPosts: Seq[Post] = {
-    posts
+    val select = for {post <- posts} yield post
+    val result = db.run(select.result)
+    Await.result(result, 1.second)
   }
 
-  def deletePost(postId: Int): String = {
-    posts.find(_.id == postId) match {
-      case Some(post: Post) => posts -= post
-        s"Post $postId has successfully deleted"
-      case None =>
-        s"Post $postId not found"
-    }
-
+  def deletePost(postId: Int): Int = {
+    val delete = posts.filter(_.postId === postId).delete
+    val result = db.run(delete)
+    Await.result(result, 1.second)
   }
 }

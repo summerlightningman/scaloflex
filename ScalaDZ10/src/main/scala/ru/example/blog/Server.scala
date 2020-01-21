@@ -4,8 +4,10 @@ import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import com.typesafe.config._
-import slick.jdbc.hikaricp.HikariCPJdbcDataSource.forConfig
-import slick.util.ClassLoaderUtil
+import slick.jdbc.PostgresProfile
+import slick.jdbc.PostgresProfile.api._
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Server extends App {
 
@@ -16,7 +18,8 @@ object Server extends App {
 
   val config = ConfigFactory.load("application.conf")
 
-  val db = forConfig("database", config, ClassLoaderUtil.defaultClassLoader)
+  val db: PostgresProfile.backend.Database = Database.forConfig("database", config)
+
 
   val wsRouter: ActorRef = actorSystem.actorOf(WsRouter.props)
 

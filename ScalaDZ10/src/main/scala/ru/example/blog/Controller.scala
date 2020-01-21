@@ -36,7 +36,7 @@ class Controller(wsRoute: ActorRef)(implicit val ec: ExecutionContext) {
           /*  posts/user/28091999  */
           get {
             val posts = PostRepository.getAllUserPosts(userId)
-            //            val result: Seq[Post] => HttpResponse = entityToJson[Seq[Post]] _ andThen Utils.buildSuccessResponse
+//            val result: Seq[Post] => HttpResponse = entityToJson[Seq[Post]] _ andThen Utils.buildSuccessResponse
             complete(listPosts(posts))
           }
         } ~ {
@@ -48,15 +48,18 @@ class Controller(wsRoute: ActorRef)(implicit val ec: ExecutionContext) {
             }
           }
         }
-      } ~ {
-        /*  /posts/12345  */
-        path(IntNumber) { postId =>
-          delete {
-            val result = PostRepository.deletePost(postId)
-            complete(result)
-          }
-        }
-      /*  /posts  */
+
+//        ~ {
+//          /*  /posts/12345  */
+//          path(IntNumber) { postId =>
+//            delete {
+//              val result = PostRepository.deletePost(postId)
+//              complete(result)
+//            }
+//          }
+//          /*  /posts  */
+//        }
+
       } ~ pathEnd {
         (post & entity(as[Post])) { post =>
           PostRepository.insertPost(post)
@@ -66,7 +69,7 @@ class Controller(wsRoute: ActorRef)(implicit val ec: ExecutionContext) {
         } ~ pathEnd {
           get {
             val posts = PostRepository.getAllPosts
-            //          val result: Seq[Post] => HttpResponse = entityToJson[Seq[Post]] _ andThen Utils.buildSuccessResponse
+//            val result: Seq[Post] => HttpResponse = entityToJson[Seq[Post]] _ andThen Utils.buildSuccessResponse
             complete(listPosts(posts))
           }
         }

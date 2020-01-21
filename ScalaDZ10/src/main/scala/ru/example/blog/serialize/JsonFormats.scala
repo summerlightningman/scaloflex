@@ -4,9 +4,10 @@ import java.sql.Timestamp
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import ru.example.blog.model.Post
-import spray.json._
+import spray.json.{DefaultJsonProtocol, JsNumber, JsValue, RootJsonFormat}
 
 object JsonFormats extends DefaultJsonProtocol with SprayJsonSupport {
+
 
   implicit object TimestampSerializer extends RootJsonFormat[Timestamp] {
     override def read(json: JsValue): Timestamp = {
