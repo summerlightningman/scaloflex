@@ -16,11 +16,10 @@ object Server extends App {
   implicit val materializer = ActorMaterializer()
   implicit val ec = actorSystem.dispatcher
   val logger = actorSystem.log
-//  val driver = Class.forName("org.postgresql.Driver")
+  //  val driver = Class.forName("org.postgresql.Driver")
   val config = ConfigFactory.load("application.conf")
 
-  //  val db = Database.forURL("jdbc:postgresql://localhost:5432/scaladz")
-  val db = Database.forConfig("mydb", config)
+  val db = Database.forConfig("database", config)
 
   val wsRouter: ActorRef = actorSystem.actorOf(WsRouter.props)
 

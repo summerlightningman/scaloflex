@@ -4,7 +4,7 @@ import ru.example.blog.model.{Post, PostTable}
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
 object PostRepository {
@@ -12,34 +12,28 @@ object PostRepository {
 
   val posts = TableQuery[PostTable]
 
-  def getAllUserPosts(userId: Int): Seq[Post] = {
+  def getAllUserPosts(userId: Int): Future[Seq[Post]] = {
     val select = for (post <- posts if post.userId === userId) yield post
-    val result = db.run(select.result)
-    Await.result(result, 1.second)
+    db.run(select.result)
   }
 
-  def insertPost(post: Post): Int = {
+  def insertPost(post: Post): Future[Int] = {
     val insert = posts += post
-    val result = db.run(insert)
-    Await.result(result, 1.second)
+    db.run(insert)
   }
 
-  def getPost(postId: Int): Seq[Post] = {
-    val select = for {post <- posts if post.postId === postId} yield post
-    val result = db.run(select.result)
-    Await.result(result, 1.second)
+  def getPost(postId: Int): Future[Seq[Post]] = {
+    val post = for {post <- posts if post.postId === postId} yield post
+    db.run(post.result)
   }
 
 
-  def getAllPosts: Seq[Post] = {
-    val select = for {post <- posts} yield post
-    val result = db.run(select.result)
-    Await.result(result, 1.second)
+  def getAllPosts: Future[Seq[Post]] = {
+    db.run(posts.result)
   }
 
-  def deletePost(postId: Int): Int = {
+  def deletePost(postId: Int): Future[Int] = {
     val delete = posts.filter(_.postId === postId).delete
-    val result = db.run(delete)
-    Await.result(result, 1.second)
+    db.run(delete)
   }
 }

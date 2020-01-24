@@ -12,15 +12,13 @@ object CommentRepository {
   private val comments = TableQuery[CommentTable]
 
 
-  def insertComment(comment: Comment): Int = {
+  def insertComment(comment: Comment): Future[Int] = {
     val insert = comments += comment
-    val result = db.run(insert)
-    Await.result(result, 1.second)
+    db.run(insert)
   }
 
-  def getAllPostComments(postId: Int): Seq[Comment] = {
+  def getAllPostComments(postId: Int): Future[Seq[Comment]] = {
     val select = for {comment <- comments if comment.postId === postId} yield comment
-    val result = db.run(select.result)
-    Await.result(result, 1.second)
+    db.run(select.result)
   }
 }

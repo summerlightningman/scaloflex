@@ -12,22 +12,19 @@ object UserRepository {
 
   private val users = TableQuery[UserTable]
 
-  def insertUser(user: User): Int = {
+  def insertUser(user: User): Future[Int] = {
     val insertAction = users += User(0, user.name)
-    val result = db.run(insertAction)
-    Await.result(result, 1.second)
+    db.run(insertAction)
   }
 
-  def getAllUsers: Seq[User] = {
+  def getAllUsers: Future[Seq[User]] = {
     val select = for {user <- users} yield user
-    val result = db.run(select.result)
-    Await.result(result, 1.second)
+    db.run(select.result)
   }
 
-  def getUser(userId: Int): Seq[User] = {
-    val select = users.filter(_.userId === userId)
-    val result = db.run(select.result)
-    Await.result(result, 1.second)
+  def getUser(userId: Int): Future[User] = {
+    val user = users.filter(_.userId === userId)
+    db.run(user.result.head)
   }
 
 
