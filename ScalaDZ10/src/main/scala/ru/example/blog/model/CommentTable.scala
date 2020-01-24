@@ -19,5 +19,5 @@ class CommentTable(tag: Tag) extends Table[Comment](tag, "comment") {
 
   def dateTime: Rep[Timestamp] = column[Timestamp]("datetime")
 
-  override def * : ProvenShape[Comment] = (commentId.?, postId, toCommentId, userId, text, dateTime).mapTo[Comment]
+  override def * : ProvenShape[Comment] = (commentId, postId, toCommentId, userId, text, dateTime).mapTo[Comment]
 }

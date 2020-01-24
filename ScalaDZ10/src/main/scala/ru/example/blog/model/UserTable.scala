@@ -9,5 +9,5 @@ class UserTable(tag: Tag) extends Table[User](tag, "user") {
 
   def name: Rep[String] = column[String]("text")
 
-  override def * : ProvenShape[User] = (userId.?, name).mapTo[User]
+  override def * : ProvenShape[User] = (userId, name).mapTo[User]
 }
