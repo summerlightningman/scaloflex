@@ -12,13 +12,17 @@ import akka.stream.scaladsl.{Flow, GraphDSL, Keep, Sink, Source}
 import akka.stream.{FlowShape, KillSwitches, OverflowStrategy}
 import ru.example.blog.WsRouter.NewPost
 import ru.example.blog.model.Post
-import ru.example.blog.repository.PostRepository
+import ru.example.blog.repository.{CommentRepository, PostRepository, UserRepository}
 import ru.example.blog.serialize.JsonFormats._
 import spray.json._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-class Controller(wsRoute: ActorRef)(implicit val ec: ExecutionContext) {
+class Controller(wsRoute: ActorRef,
+                 userRepository: UserRepository,
+                 postRepository: PostRepository,
+                 commentRepository: CommentRepository
+                )(implicit val ec: ExecutionContext) {
 
   type Response = Map[String, String]
 
@@ -33,7 +37,7 @@ class Controller(wsRoute: ActorRef)(implicit val ec: ExecutionContext) {
         path(IntNumber) { userId =>
           /*  posts/user/28091999  */
           get {
-            val posts = PostRepository.getAllUserPosts(userId)
+            val posts: Future[Seq[Post]] = postRepository.getAllUserPosts(userId)
             complete(posts)
           }
         } ~ {
@@ -44,27 +48,26 @@ class Controller(wsRoute: ActorRef)(implicit val ec: ExecutionContext) {
               handleWebSocketMessages(websocket(userId))
             }
           }
+        } ~ {
+          /*  /posts/12345  */
+          path(IntNumber) { postId =>
+            delete {
+              val result: Future[Int] = postRepository.deletePost(postId)
+              complete(result)
+            }
+          }
+          /*  /posts  */
         }
-//        ~ {
-//                  /*  /posts/12345  */
-//                  path(IntNumber) { postId =>
-//                    delete {
-//                      val result = PostRepository.deletePost(postId)
-//                      complete(result)
-//                    }
-//                  }
-//                  /*  /posts  */
-//                }
 
       } ~ pathEnd {
         (post & entity(as[Post])) { post =>
-          PostRepository.insertPost(post)
+          postRepository.insertPost(post)
           wsRoute ! NewPost(post)
-          val response = Utils.buildSuccessResponse("post was inserted")
+          val response: HttpResponse = Utils.buildSuccessResponse("post was inserted")
           complete(response)
         } ~ pathEnd {
           get {
-            val posts = PostRepository.getAllPosts
+            val posts: Future[Seq[Post]] = postRepository.getAllPosts
             complete(posts)
           }
         }

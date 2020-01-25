@@ -4,11 +4,9 @@ import ru.example.blog.model.{Post, PostTable}
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
+import scala.concurrent.Future
 
-object PostRepository {
-  val db = Database.forConfig("database")
+class PostRepository(db: Database) {
 
   val posts = TableQuery[PostTable]
 

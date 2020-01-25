@@ -10,10 +10,8 @@ object JsonFormats extends DefaultJsonProtocol with SprayJsonSupport {
 
 
   implicit object TimestampSerializer extends RootJsonFormat[Timestamp] {
-    override def read(json: JsValue): Timestamp = {
-      json match {
-        case JsNumber(value) => new Timestamp(value.toLong)
-      }
+    override def read(json: JsValue): Timestamp = json match {
+      case JsNumber(value) => new Timestamp(value.toLong)
     }
 
     override def write(obj: Timestamp): JsValue = {

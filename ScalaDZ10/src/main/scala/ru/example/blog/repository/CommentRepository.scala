@@ -4,13 +4,11 @@ import ru.example.blog.model.{Comment, CommentTable}
 import slick.jdbc.PostgresProfile.api._
 import slick.lifted.TableQuery
 
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
-object CommentRepository {
-  val db = Database.forConfig("database")
+class CommentRepository(db: Database) {
+
   private val comments = TableQuery[CommentTable]
-
 
   def insertComment(comment: Comment): Future[Int] = {
     val insert = comments += comment

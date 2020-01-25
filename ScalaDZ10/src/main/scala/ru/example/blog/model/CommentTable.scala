@@ -6,7 +6,7 @@ import slick.jdbc.PostgresProfile.api._
 import slick.lifted.ProvenShape
 
 
-class CommentTable(tag: Tag) extends Table[Comment](tag, "comment") {
+class CommentTable(tag: Tag) extends Table[Comment](tag, Some("scaladz"), "comment") {
   def commentId: Rep[Int] = column[Int]("comment_id", O.PrimaryKey, O.AutoInc)
 
   def postId: Rep[Int] = column[Int]("post_id")
