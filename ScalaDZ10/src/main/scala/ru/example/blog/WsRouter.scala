@@ -16,7 +16,7 @@ class WsRouter extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case NewConnect(userId, connectionId,wsSource) =>
-      log.info(s"new connection for user $userId")
+      log.info(s"New connection for user $userId")
       val newCon = connections
           .get(userId)
           .map(c => c + (connectionId -> wsSource))
@@ -24,7 +24,7 @@ class WsRouter extends Actor with ActorLogging {
       connections.update(userId, newCon)
 
     case Disconnect(userId, connectionId) =>
-      log.info(s"disconnect user=$userId")
+      log.info(s"Disconnect user=$userId")
       val connection = connections.get(userId)
       connection.foreach(userCon =>
             userCon.get(connectionId).foreach(_.killSwitch.shutdown())
