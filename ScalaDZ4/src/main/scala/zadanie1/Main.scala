@@ -5,16 +5,19 @@ object Main extends App {
 
 }
 
-case class MultiList(size: Int) {
-  val head: Array[Int] = new Array[Int](size)
-  val next: Array[Int] = new Array[Int](size + 1)
-  val data: Array[Int] = new Array[Int](size + 1)
-  var count = 1
+case class MyList[Contain](elems: Contain*) {
+  def separateBy(count: Int): IndexedSeq[Seq[Contain]] =
+    for (i <- 0 to elems.size if i % count == 0) yield Seq(elems(i + 1), elems(i + 2), elems(i + 3))
 
-  def add(h: Int, v: Int): Unit = {
-    next(count) = head(h)
-    data(count) = v
-    count += 1
-    head(h) = count
+  def ::(left: Int, right: Int): Seq[Contain] = {
+    if (left > right)
+      throw new Exception("Left argument bigger than right")
+    else {
+      for (i <- left to right) yield elems(i)
+    }
+  }
+
+  override def toString: String = {
+    s"[${elems.mkString(" ")}]"
   }
 }

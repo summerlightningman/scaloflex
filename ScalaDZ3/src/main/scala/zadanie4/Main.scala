@@ -16,12 +16,12 @@ object Main extends App {
     })
   }
 
-  println(s"Обычного груза было доставлено ${groupped(1).length} единиц")
-  println(s"Ценного груза было доставлено ${groupped(2).length} единиц")
+  println(s"Common package was delivered in ${groupped(1).length} units")
+  println(s"Uncommon package was delivered in ${groupped(2).length} units")
 
   val common = Common(groupped(1).sum)
   val uncommon = Uncommon(groupped(2).sum)
 
-  println(s"Масса обычного груза равна ${common.pack()} единицам массы")
-  println(s"Масса ценного груза равна ${uncommon.pack()} единицам массы")
+  println(s"Common package weight equals ${common.pack()} weight units")
+  println(s"Common package weight equals ${uncommon.pack()} weight units")
 }

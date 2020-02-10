@@ -1,39 +1,47 @@
 package zadanie1
 
-
-import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
+import scala.concurrent._
 
-object Main {
-  def main(args: Array[String]): Unit = {
-    feed()
-  }
+object Main extends App {
+  val philosophers: Array[String] = Array(
+    "Archimed",
+    "Smyshlyaev",
+    "Lokk",
+    "Gobbs",
+    "Plato",
+  )
 
-  def feed(): Unit = {
-    val names = Array("Gobbs", "Lokk", "Aristotle", "Sokrat", "Archimed")
-    val spoons = Array[Boolean](false, false, false, false, false)
-    val philosophers = new Array[Filosof](5)
-    for (i <- philosophers.indices) philosophers(i) = Filosof(names(i), i, if (i == philosophers.length - 1) 0 else i + 1)
+  val seizedDishes: Array[Boolean] = Array(false, false, false, false, false)
 
-    philosophers.foreach((philosopher: Filosof) => {
-      val toEat = new Thread(new Runnable {
-        override def run(): Unit = {
-          println(s"${philosopher.name} will take a left spoon ${philosopher.left}")
-          spoons(philosopher.left).synchronized {
-            println(s"${philosopher.name} has took a left spoon ${philosopher.left}")
-            spoons(philosopher.right).synchronized {
-              println(s"${philosopher.name} has took a right spoon ${philosopher.right}")
-              println(s"${philosopher.name} is eating...")
-              Thread.sleep(1500)
-            }
-            println(s"${philosopher.name} has put a right spoon ${philosopher.right}")
-          }
-          println(s"${philosopher.name} has put a left spoon ${philosopher.left}")
-          println(s"${philosopher.name} ate!")
+  philosophers.foreach(goEat)
+
+  def goEat(philosopher: String): Future[Unit] = {
+    Future {
+      println(f"$philosopher is going to eat")
+      val index, left = philosophers.indexOf(philosopher)
+      val right = if (philosopher == philosophers.last) 0 else index + 1
+      println(f"\t$philosopher will take left $left dish")
+      seizedDishes(left).synchronized {
+        println(f"\t\t$philosopher has took left $left dish")
+        println(f"\t\t\t$philosopher will take right $right dish")
+        seizedDishes(right).synchronized {
+          println(f"\t\t\t\t$philosopher has took right $right dish")
+          println(f"$philosopher is eating")
+          Thread.sleep(1000)
+          println(f"\t\t\t\t$philosopher will put right $right dish")
         }
-      }).start()
-    })
+        println(f"\t\t\t$philosopher has put right $right dish")
+        println(f"\t\t$philosopher will put left $left dish")
+      }
+      println(f"\t$philosopher has put right $left dish")
+      println(f"$philosopher has ate")
 
+    }
   }
+
+  Thread.sleep(6500)
+
 }
+
+
